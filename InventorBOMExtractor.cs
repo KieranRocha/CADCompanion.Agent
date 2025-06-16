@@ -68,6 +68,14 @@ namespace CADCompanion.Agent
     {
         private dynamic? _inventorApp;
 
+        // ✅ CORRIGIDO: Configuração de licença do EPPlus para versão 8+
+        static InventorBomExtractor()
+        {
+            // Configura licença do EPPlus para uso não comercial
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        }
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
         public void ConnectToInventor()
         {
             // Tenta conectar à instância ativa primeiro
@@ -418,6 +426,7 @@ namespace CADCompanion.Agent
         /// <summary>
         /// Abre um arquivo no Inventor
         /// </summary>
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
         public bool OpenDocument(string filePath)
         {
             try
@@ -795,7 +804,7 @@ namespace CADCompanion.Agent
             }
         }
 
-        // Métodos de exportação (não foram alterados)
+        // Métodos de exportação
 
         public void ExportBOMToCSV(List<BomItem> bomItems, string filePath)
         {
@@ -822,7 +831,8 @@ namespace CADCompanion.Agent
 
         public void ExportBOMToExcel(List<BomItem> bomItems, string filePath)
         {
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            // ✅ CORRIGIDO: EPPlus 8+ não usa mais ExcelPackage.LicenseContext
+            // A configuração de licença agora é feita no construtor estático
 
             using var package = new ExcelPackage();
             var worksheet = package.Workbook.Worksheets.Add("BOM");

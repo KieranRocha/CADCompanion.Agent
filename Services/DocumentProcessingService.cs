@@ -1,4 +1,4 @@
-// Services/DocumentProcessingService.cs
+// Services/DocumentProcessingService.cs - CORRIGIDO
 using Microsoft.Extensions.Logging;
 using CADCompanion.Agent.Models;
 using System;
@@ -302,21 +302,8 @@ namespace CADCompanion.Agent.Services
         {
             try
             {
-                var activity = new DocumentActivity
-                {
-                    FilePath = documentEvent.FilePath,
-                    FileName = documentEvent.FileName,
-                    EventType = documentEvent.EventType.ToString(),
-                    DocumentType = documentEvent.DocumentType.ToString(),
-                    ProjectId = documentEvent.ProjectId,
-                    ProjectName = documentEvent.ProjectName,
-                    Engineer = documentEvent.Engineer,
-                    Timestamp = documentEvent.Timestamp,
-                    CompanionId = Environment.MachineName,
-                    InventorVersion = documentEvent.InventorVersion
-                };
-
-                await _apiCommunication.SendDocumentActivityAsync(activity);
+                // ✅ CORRIGIDO: Enviando DocumentEvent diretamente ao invés de DocumentActivity
+                await _apiCommunication.SendDocumentActivityAsync(documentEvent);
             }
             catch (Exception ex)
             {
@@ -339,20 +326,6 @@ namespace CADCompanion.Agent.Services
         public string ExtractedBy { get; set; } = string.Empty;
         public string? Engineer { get; set; }
         public Dictionary<string, object> Properties { get; set; } = new();
-    }
-
-    public class DocumentActivity
-    {
-        public string FilePath { get; set; } = string.Empty;
-        public string FileName { get; set; } = string.Empty;
-        public string EventType { get; set; } = string.Empty;
-        public string DocumentType { get; set; } = string.Empty;
-        public string? ProjectId { get; set; }
-        public string? ProjectName { get; set; }
-        public string? Engineer { get; set; }
-        public DateTime Timestamp { get; set; }
-        public string CompanionId { get; set; } = string.Empty;
-        public string? InventorVersion { get; set; }
     }
 
     #endregion

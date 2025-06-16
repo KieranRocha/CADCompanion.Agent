@@ -1,7 +1,6 @@
 // Services/InventorDocumentEventService.cs - CORRIGIDO
 using Microsoft.Extensions.Logging;
 using CADCompanion.Agent.Models;
-using CADCompanion.Agent.Models;
 using System;
 using System.IO;
 using System.Threading.Tasks;

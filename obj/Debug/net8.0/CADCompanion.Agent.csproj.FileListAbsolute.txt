@@ -3,3 +3,4 @@ C:\Users\kiera\OneDrive\Projetos\Synapse\CADCompanion.Agent\obj\Debug\net8.0\CAD
 C:\Users\kiera\OneDrive\Projetos\Synapse\CADCompanion.Agent\obj\Debug\net8.0\CADCompanion.Agent.AssemblyInfoInputs.cache
 C:\Users\kiera\OneDrive\Projetos\Synapse\CADCompanion.Agent\obj\Debug\net8.0\CADCompanion.Agent.AssemblyInfo.cs
 C:\Users\kiera\OneDrive\Projetos\Synapse\CADCompanion.Agent\obj\Debug\net8.0\CADCompanion.Agent.csproj.CoreCompileInputs.cache
+C:\Users\kiera\OneDrive\Projetos\Synapse\CADCompanion.Agent\obj\Debug\net8.0\CADCompanion.Agent.sourcelink.json

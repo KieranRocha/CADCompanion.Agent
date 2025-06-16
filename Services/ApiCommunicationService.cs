@@ -1,4 +1,4 @@
-// Em CADCompanion.Agent/Services/ApiCommunicationService.cs
+// Services/ApiCommunicationService.cs - CORRIGIDO
 
 using CADCompanion.Agent.Models;
 using CADCompanion.Shared.Contracts;
@@ -37,48 +37,112 @@ public class ApiCommunicationService : IApiCommunicationService
         }
     }
 
-    // --- Implementações de placeholder para os outros métodos da interface ---
-    // Substitua os TODOs pela lógica real de chamada à API
+    // --- Implementações dos outros métodos da interface ---
 
     public async Task SendBOMDataAsync(BOMDataWithContext bomData)
     {
-        _logger.LogWarning("Tentativa de chamada ao método obsoleto SendBOMDataAsync. A lógica deve usar SubmitBomAsync.");
-        // TODO: Mapear BOMDataWithContext para BomSubmissionDto e chamar SubmitBomAsync
-        await Task.CompletedTask;
+        try
+        {
+            _logger.LogInformation("Enviando dados de BOM: {AssemblyFileName}", bomData.AssemblyFileName);
+            await _httpClient.PostAsJsonAsync("api/boms/data", bomData);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao enviar dados de BOM");
+        }
     }
 
     public async Task SendDocumentActivityAsync(DocumentEvent documentEvent)
     {
-        _logger.LogInformation("Enviando atividade de documento para {FilePath}", documentEvent.FilePath);
-        // TODO: Implementar POST para o endpoint /api/activity/log
-        await _httpClient.PostAsJsonAsync("api/activity/log", documentEvent);
+        try
+        {
+            _logger.LogDebug("Enviando atividade de documento: {FileName}", documentEvent.FileName);
+            await _httpClient.PostAsJsonAsync("api/activity/log", documentEvent);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao enviar atividade de documento");
+        }
     }
 
     public async Task SendHeartbeatAsync()
     {
-        _logger.LogInformation("Enviando Heartbeat.");
-        // TODO: Implementar POST para o endpoint /api/session/heartbeat
-        await _httpClient.PostAsJsonAsync("api/session/heartbeat", new {});
+        try
+        {
+            _logger.LogDebug("Enviando Heartbeat");
+            var heartbeat = new
+            {
+                CompanionId = Environment.MachineName,
+                Timestamp = DateTime.UtcNow,
+                Status = "RUNNING"
+            };
+            await _httpClient.PostAsJsonAsync("api/session/heartbeat", heartbeat);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao enviar heartbeat");
+        }
     }
 
     public async Task SendPartDataAsync(object partData)
     {
-        _logger.LogInformation("Enviando dados de peça.");
-        // TODO: Implementar POST para o endpoint /api/parts/submit
-        await _httpClient.PostAsJsonAsync("api/parts/submit", partData);
+        try
+        {
+            _logger.LogDebug("Enviando dados de peça");
+            await _httpClient.PostAsJsonAsync("api/parts/submit", partData);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao enviar dados de peça");
+        }
     }
 
     public async Task SendWorkSessionEndedAsync(WorkSession session)
     {
-        _logger.LogInformation("Enviando fim da sessão de trabalho.");
-        // TODO: Implementar POST para o endpoint /api/session/end
-        await _httpClient.PostAsJsonAsync("api/session/end", session);
+        try
+        {
+            _logger.LogInformation("Enviando fim da sessão de trabalho: {FileName}", session.FileName);
+            await _httpClient.PostAsJsonAsync("api/session/end", session);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao enviar fim da sessão de trabalho");
+        }
     }
 
     public async Task SendWorkSessionUpdatedAsync(WorkSession session)
     {
-        _logger.LogInformation("Enviando atualização da sessão de trabalho.");
-        // TODO: Implementar POST para o endpoint /api/session/update
-        await _httpClient.PostAsJsonAsync("api/session/update", session);
+        try
+        {
+            _logger.LogDebug("Enviando atualização da sessão de trabalho: {FileName}", session.FileName);
+            await _httpClient.PostAsJsonAsync("api/session/update", session);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao enviar atualização da sessão de trabalho");
+        }
+    }
+
+    // Sobrecarga para compatibilidade com WorkSessionService
+    public async Task SendWorkSessionUpdatedAsync(WorkSession session, string updateReason)
+    {
+        try
+        {
+            _logger.LogDebug("Enviando atualização da sessão de trabalho: {FileName} - Motivo: {UpdateReason}", 
+                session.FileName, updateReason);
+            
+            var updateData = new
+            {
+                Session = session,
+                UpdateReason = updateReason,
+                Timestamp = DateTime.UtcNow
+            };
+            
+            await _httpClient.PostAsJsonAsync("api/session/update", updateData);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao enviar atualização da sessão de trabalho");
+        }
     }
 }

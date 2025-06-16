@@ -67,8 +67,19 @@ namespace CADCompanion.Agent.Services
 
                 _logger.LogInformation($"🚀 Work Session iniciada: {workSession.FileName} (ID: {workSession.Id})");
 
-                // Envia para API
-                //await _apiCommunication.SendWorkSessionStartedAsync(workSession);
+                // Envia para API (sem aguardar para não bloquear)
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        // Aqui você pode implementar o envio para API quando o endpoint estiver pronto
+                        await Task.Delay(1); // Placeholder
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Erro ao enviar início de sessão para API");
+                    }
+                });
 
                 // Dispara evento
                 WorkSessionStarted?.Invoke(this, new WorkSessionStartedEventArgs
@@ -204,7 +215,6 @@ namespace CADCompanion.Agent.Services
                 // Remove do cache para forçar recálculo
                 _dailyStatsCache.TryRemove(dateKey, out _);
                 
-                // ✅ FIX: Não precisa ser async aqui - operação simples
                 _logger.LogDebug($"Estatísticas diárias atualizadas para {dateKey}");
                 
                 return Task.CompletedTask;

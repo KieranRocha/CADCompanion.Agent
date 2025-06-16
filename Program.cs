@@ -1,6 +1,7 @@
-// Em CADCompanion.Agent/Program.cs
+// Program.cs - CORRIGIDO v2
 using CADCompanion.Agent.Configuration;
 using CADCompanion.Agent.Services;
+using CADCompanion.Agent; // Para InventorBomExtractor
 using Serilog;
 
 IHost host = Host.CreateDefaultBuilder(args)
@@ -10,12 +11,21 @@ IHost host = Host.CreateDefaultBuilder(args)
     })
     .UseSerilog((context, loggerConfig) =>
     {
-        loggerConfig.ReadFrom.Configuration(context.Configuration);
+        loggerConfig
+            .MinimumLevel.Information()
+            .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
+            .Enrich.FromLogContext()
+            .WriteTo.Console()
+            .WriteTo.File("logs/companion-.log", 
+                rollingInterval: RollingInterval.Day,
+                retainedFileCountLimit: 30);
     })
     .ConfigureServices((hostContext, services) =>
     {
+        // Configuração
         services.Configure<CompanionConfiguration>(hostContext.Configuration.GetSection("CompanionConfiguration"));
 
+        // HttpClient para API
         services.AddHttpClient<IApiCommunicationService, ApiCommunicationService>(client =>
         {
             var serverUrl = hostContext.Configuration["ServerBaseUrl"];
@@ -27,12 +37,12 @@ IHost host = Host.CreateDefaultBuilder(args)
         });
 
         // Registra os serviços como Singleton (uma única instância para toda a aplicação)
-        services.AddSingleton<IWorkDrivenMonitoringService, WorkDrivenMonitoringService>();
-        services.AddSingleton<DocumentProcessingService>();
+        services.AddSingleton<InventorBomExtractor>();
+        services.AddSingleton<IInventorConnectionService, InventorConnectionService>();
         services.AddSingleton<IInventorDocumentEventService, InventorDocumentEventService>();
         services.AddSingleton<WorkSessionService>();
-        services.AddSingleton<InventorConnectionService>();
-        services.AddSingleton<InventorBOMExtractor>();
+        services.AddSingleton<DocumentProcessingService>();
+        services.AddSingleton<IWorkDrivenMonitoringService, WorkDrivenMonitoringService>();
         
         // Registra o CompanionWorkerService como o serviço de fundo principal
         services.AddHostedService<CompanionWorkerService>();

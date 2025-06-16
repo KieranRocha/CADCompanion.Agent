@@ -1,4 +1,4 @@
-// Em CADCompanion.Agent/Services/IApiCommunicationService.cs
+// Services/IApiCommunicationService.cs - CORRIGIDO
 
 using CADCompanion.Agent.Models;
 using CADCompanion.Shared.Contracts;
@@ -13,6 +13,7 @@ public interface IApiCommunicationService
     // Outros métodos que sua aplicação precisa para se comunicar com a API
     Task SendWorkSessionEndedAsync(WorkSession session);
     Task SendWorkSessionUpdatedAsync(WorkSession session);
+    Task SendWorkSessionUpdatedAsync(WorkSession session, string updateReason); // Sobrecarga
     Task SendHeartbeatAsync();
     Task SendBOMDataAsync(BOMDataWithContext bomData);
     Task SendPartDataAsync(object partData); // Considere criar um DTO específico em vez de 'object'

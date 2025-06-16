@@ -1,6 +1,21 @@
-// Configuration/CompanionConfiguration.cs - STEP 2 ATUALIZADO
+// Configuration/CompanionConfiguration.cs - CORRIGIDO
 namespace CADCompanion.Agent.Configuration
 {
+    public class CompanionConfiguration
+    {
+        public CompanionSettings Settings { get; set; } = new();
+        
+        // Para compatibilidade com múltiplas pastas monitoradas
+        public List<MonitoredFolder> MonitoredFolders { get; set; } = new();
+    }
+
+    public class MonitoredFolder
+    {
+        public string Path { get; set; } = string.Empty;
+        public bool IncludeSubdirectories { get; set; } = true;
+        public string[] FileTypes { get; set; } = { "*.iam", "*.ipt", "*.idw" };
+    }
+
     public class CompanionSettings
     {
         public string ApiBaseUrl { get; set; } = "http://localhost:5001";
