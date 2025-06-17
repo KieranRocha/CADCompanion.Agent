@@ -44,6 +44,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddSingleton<DocumentProcessingService>();
         services.AddSingleton<IWorkDrivenMonitoringService, WorkDrivenMonitoringService>();
         
+        
         // Registra o CompanionWorkerService como o serviço de fundo principal
         services.AddHostedService<CompanionWorkerService>();
     })
