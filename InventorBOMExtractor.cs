@@ -69,12 +69,13 @@ namespace CADCompanion.Agent
         private dynamic? _inventorApp;
 
         // ✅ CORRIGIDO: Configuração de licença do EPPlus para versão 8+
-        static InventorBomExtractor()
-        {
-            // Configura licença do EPPlus para uso não comercial
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        }
-
+           static InventorBomExtractor()
+    {
+        // Para uso não comercial sob a licença Polyform, o EPPlus 8+ não requer
+        // que nenhuma propriedade de licença seja definida. A linha que causava
+        // o erro foi removida. O desenvolvedor deve estar ciente dos termos da licença.
+        // Veja: https://epplussoftware.com/developers/licenseexception
+    }
         [System.Runtime.Versioning.SupportedOSPlatform("windows")]
         public void ConnectToInventor()
         {
